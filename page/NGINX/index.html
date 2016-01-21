@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Phoenix Nemo">
+    <meta name="description" content="Phoenix&#39;s Wiki">
+    <title>
+                NGINX - PhoenixWiki            </title>
+    <link href="/assets/semantic.min.css" rel="stylesheet"/>
+    <link href="/assets/style.css" rel="stylesheet"/>
+    <!-- <script src="/assets/semantic.min.js"></script> -->
+    <script src="/assets/highlight.min.js"></script>
+    <base target="_blank">
+</head>
+<body>
+<div>
+    <div class="ui container">
+        <div class="ui dividing header">
+            <h1 class="heading">
+                <a href="/" class="logo-text" target="_self">
+                    PhoenixWiki                </a>
+            </h1>
+            <small>Sun will shine on the horizon.</small>
+        </div>
+<div class="ui grid">
+<div class="twelve wide column">
+<div class="column">
+<div class="ui raised segment">
+<a class="ui blue ribbon label">Server Configuration</a>
+<h1 class="page-title">NGINX</h1>
+<div class="page-content">
+<h4><a href="#HTTP_Proxy" name="HTTP_Proxy" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;HTTP Proxy</h4>
+<pre><code>resolver 8.8.4.4;
+server {
+    listen 3128;
+    location / {
+        proxy_pass http://$http_host$request_uri;
+    }
+}
+</code></pre>
+<h4><a href="#Reverse_Proxy" name="Reverse_Proxy" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Reverse Proxy</h4>
+<pre><code>server {
+    listen 80;
+    server_name new-site.com;
+
+    location / {
+        proxy_pass http://origin-site.com/;
+        proxy_redirect default;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        port_in_redirect    on;
+        server_name_in_redirect off;
+        proxy_connect_timeout 300;
+    }
+}
+</code></pre>
+<h4><a href="#Cached_Reverse_Proxy" name="Cached_Reverse_Proxy" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Cached Reverse Proxy</h4>
+<p>Make directories for cache:</p>
+<pre><code>mkdir -p /var/cache/nginx/cache
+mkdir -p /var/cache/nginx/temp
+</code></pre>
+<p>Paste below <code>log_format</code> directive in <code>nginx.conf</code>:</p>
+<pre><code>client_body_buffer_size  512k;
+proxy_connect_timeout    5;
+proxy_read_timeout       60;
+proxy_send_timeout       5;
+proxy_buffer_size        16k;
+proxy_buffers            4 64k;
+proxy_busy_buffers_size 128k;
+proxy_temp_file_write_size 128k;
+proxy_temp_path   /var/cache/nginx/temp;
+proxy_cache_path  /var/cache/nginx/cache levels=1:2 keys_zone=cache_one:500m inactive=7d max_size=30g;
+</code></pre>
+<p>Add to vhost configuration:</p>
+<pre><code>proxy_cache cache_one;
+proxy_cache_valid  200 304 3d;
+proxy_cache_key $host$uri$is_args$args;
+expires 10d;
+</code></pre>
+<h4><a href="#Set_Expires_Headers_For_Static_Content" name="Set_Expires_Headers_For_Static_Content" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Set Expires Headers For Static Content</h4>
+<pre><code>location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+    expires 1y;
+    log_not_found off;
+}
+</code></pre>
+<h4><a href="#Increase_HTTP_Post_Size_Limit" name="Increase_HTTP_Post_Size_Limit" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Increase HTTP Post Size Limit</h4>
+<pre><code>http {
+    #...
+    client_max_body_size 100m;
+    #...
+}
+</code></pre>
+<h4><a href="#Set_Correct_Files/Folders_Permissions" name="Set_Correct_Files/Folders_Permissions" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Set Correct Files/Folders Permissions</h4>
+<pre><code>chown -R www-data:www-data .
+find . -type f -exec chmod 644 {} \;
+find . -type d -exec chmod 755 {} \;
+</code></pre>
+<h4><a href="#Setup_Basic-Auth_on_NGINX" name="Setup_Basic-Auth_on_NGINX" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Setup Basic-Auth on NGINX</h4>
+<p>Install <code>apache2-utils</code></p>
+<pre><code>apt-get install apache2-utils
+</code></pre>
+<p>Create User and Password</p>
+<pre><code>htpasswd -c /etc/nginx/.htpasswd exampleuser
+</code></pre>
+<p>Add to NGINX site config</p>
+<pre><code>server {
+    ...
+    location / {
+        ...
+        auth_basic &quot;Restricted&quot;;
+        auth_basic_user_file /etc/nginx/.htpasswd;  #For Basic Auth
+    }
+}
+</code></pre>
+<h4><a href="#NGINX_with_SSL" name="NGINX_with_SSL" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;NGINX with SSL</h4>
+<pre><code>listen 443 ssl;
+ssl_certificate /etc/nginx/server.crt;
+ssl_certificate_key /etc/nginx/server.key;
+ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+ssl_prefer_server_ciphers on;
+ssl_ciphers &quot;EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4&quot;;
+keepalive_timeout    70;
+ssl_session_cache    shared:SSL:10m;
+ssl_session_timeout  10m;
+</code></pre>
+<p>Concatenate certificates via <code>cat</code></p>
+<pre><code>cat domain.crt intermediate.pem rootCA.pem &gt; domain.signed.crt
+</code></pre>
+<p>Avoid using SHA-1 as key exchange method, use Diffie Hellman Ephemeral parameters.</p>
+<pre><code>cd /etc/ssl/certs
+openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
+</code></pre>
+<p>Then tell nginx to use it for DHE key-exchange:</p>
+<pre><code>ssl_dhparam /etc/ssl/certs/dhparam.pem;
+</code></pre>
+<h5><a href="#Redirect_to_HTTPS" name="Redirect_to_HTTPS" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Redirect to HTTPS</h5>
+<pre><code>location / {
+    return 301 https://example.com$request_uri;
+}
+</code></pre>
+<h5><a href="#HSTS" name="HSTS" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;HSTS</h5>
+<pre><code>    add_header Strict-Transport-Security max-age=63072000;
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+</code></pre>
+<h4><a href="#CORS_Config" name="CORS_Config" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;CORS Config</h4>
+<p>Add the following to <code>location</code> block with proper options.</p>
+<pre><code>    add_header 'Access-Control-Allow-Origin' &quot;*&quot;;
+    add_header 'Access-Control-Allow-Credentials' 'true';
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+    add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With';
+</code></pre>
+<p>If you get errors like <code>... from origin 'https://...' has been blocked from loading by Cross-Origin Resource Sharing policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.</code>, try to change value of <code>Access-Control-Allow-Origin</code> to specific domains.</p>
+<pre><code>    add_header 'Access-Control-Allow-Origin' &quot;example.com static.example.com&quot;;
+</code></pre>
+<h4><a href="#Enable_Certificate_Transparency_for_DV_certificates" name="Enable_Certificate_Transparency_for_DV_certificates" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable Certificate Transparency for DV certificates</h4>
+<p><a href="https://www.certificate-transparency.org/resources-for-site-owners/nginx">nginx-ct</a></p>
+<p>Reference:</p>
+<ol>
+<li><a href="http://felixc.at/Nginx">Nginx - FelixWiki</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-http-authentication-with-nginx-on-ubuntu-12-10">DigitalOcean Tutorials</a></li>
+<li><a href="http://enable-cors.org/server_nginx.html">enable-cors</a></li>
+<li><a href="https://gist.github.com/michiel/1064640">Gist - michiel</a></li>
+<li><a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">Strong SSL Security on nginx</a></li>
+</ol>
+<p><em>Last Update: Tue Dec 01 2015 16:06:27 GMT+0800 (CST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
+</div>
+<div>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'phoenixwiki';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+</div>
+</div>
+<div class="four wide column">
+<div class="column">
+<div class="ui card">
+    <div class="image">
+        <img class="sidebar-avatar" src="/static/img/avatar.m.jpg">
+    </div>
+    <div class="content">
+        <a class="header">Phoenix Nemo</a>
+        <div class="meta">
+            <span class="date">i@phoenixlzx.com</span>
+        </div>
+        <div class="description">
+            DevOps | ACG | Open Source
+        </div>
+    </div>
+    <div class="extra content" style="text-align: center">
+        <a href="https://github.com/phoenixlzx" class="item">
+            <i class="github icon large"></i>
+        </a>
+        <a href="https://plus.google.com/107142103119739092775" class="item">
+            <i class="google plus icon large"></i>
+        </a>
+        <a href="https://twitter.com/phoenixlzx" class="item">
+            <i class="twitter icon large"></i>
+        </a>
+    </div>
+</div>
+<div class="ui vertical menu sidebar-column">
+    <div class="item">
+        <div class="header"><a href="/" target="_self">Homepage</a></div>
+                <div class="header"><a href="/changelog">Changelog</a></div>
+            </div>
+        <div class="item">
+        <div class="header">Gaming</div>
+        <div class="menu">
+                        <a href="/page/CounterStrike" target="_self" class="item">
+                                Counter Strike                             </a>
+                        <a href="/page/Minecraft" target="_self" class="item">
+                                Minecraft                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Database</div>
+        <div class="menu">
+                        <a href="/page/DB-Backup" target="_self" class="item">
+                                Database backup                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Security</div>
+        <div class="menu">
+                        <a href="/page/DNSCrypt" target="_self" class="item">
+                                DNSCrypt                            </a>
+                        <a href="/page/system-security-config" target="_self" class="item">
+                                System Security Configuration                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Server Configuration</div>
+        <div class="menu">
+                        <a href="/page/DNSMasq" target="_self" class="item">
+                                DNSMasq                            </a>
+                        <a href="/page/MySQL" target="_self" class="item">
+                                MySQL                            </a>
+                        <a href="/page/NGINX" target="_self" class="item">
+                                NGINX                            </a>
+                        <a href="/page/PHP" target="_self" class="item">
+                                PHP                            </a>
+                        <a href="/page/Postfix" target="_self" class="item">
+                                Postfix                            </a>
+                        <a href="/page/ethtool" target="_self" class="item">
+                                ethtool                            </a>
+                        <a href="/page/uWSGI-PHP" target="_self" class="item">
+                                PHP / uWSGI                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Networking</div>
+        <div class="menu">
+                        <a href="/page/IP-Rules" target="_self" class="item">
+                                IP Rules                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">OS X</div>
+        <div class="menu">
+                        <a href="/page/NTFS" target="_self" class="item">
+                                NTFS                            </a>
+                        <a href="/page/sips" target="_self" class="item">
+                                sips                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Cloud Computing</div>
+        <div class="menu">
+                        <a href="/page/OpenNebula" target="_self" class="item">
+                                OpenNebula                            </a>
+                    </div>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+    </div>
+</div>
+<div class="footer">
+    <div class="footer-text">
+        PhoenixWiki using <a href="https://github.com/phoenixlzx/MinoriWiki" target="_blank">MinoriWiki</a>
+    </div>
+</div>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
