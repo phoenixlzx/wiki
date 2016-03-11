@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                IP Rules - PhoenixWiki            </title>
+                NAT - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -29,17 +29,40 @@
 <div class="column">
 <div class="ui raised segment">
 <a class="ui blue ribbon label">Networking</a>
-<h1 class="page-title">IP Rules</h1>
+<h1 class="page-title">NAT</h1>
 <div class="page-content">
-<h4><a href="#IP_Rules_for_special_routed_server" name="IP_Rules_for_special_routed_server" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;IP Rules for special routed server</h4>
-<p>Add a table name to <code>/etc/iproute2/rt_tables</code></p>
-<pre><code>10 orig
+<h2><a href="#DNAT" name="DNAT" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;DNAT</h2>
+<p>Set up DNAT to forward with client source IP. (You may need a private tunnel as most IDCs have route filter)</p>
+<ul>
+<li>Gateway
+<ul>
+<li>eth0 public <code>1.2.3.4</code></li>
+<li>tun0 private <code>192.168.1.1</code></li>
+</ul></li>
+<li>Backend
+<ul>
+<li>eth0 public <code>5.6.7.8</code></li>
+<li>tun0 private <code>192.168.1.2</code></li>
+</ul></li>
+</ul>
+<p>On gateway:</p>
+<pre><code>iptables -t nat -I PREROUTING -p tcp -i eth0 --dport 8080 -j DNAT --to-destination 192.168.1.2:8080
 </code></pre>
-<p>Add IP Rule, assuming main IP is <code>192.168.1.100</code>, gateway is <code>192.168.1.1</code></p>
-<pre><code>ip rule add from 192.168.1.100 lookup orig
-ip route add table orig default via 192.168.1.1
+<p>On backend:</p>
+<p>Add to <code>/etc/iproute2/rt_tables</code></p>
+<pre><code>100 priv
 </code></pre>
-<p><em>Last Update: Thu Jan 21 2016 19:49:33 GMT+0800 (CST)</em>  <a href="/raw/IP-Rules.md">Source File</a></p>
+<p>then set default route when traffic coming from NAT</p>
+<pre><code>ip rule add from 192.168.1.2 lookup priv
+ip route add default dev tun0 table priv
+</code></pre>
+<h2><a href="#DNAT_&_SNAT" name="DNAT_&_SNAT" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;DNAT &amp; SNAT</h2>
+<p>Use this if you do not need to forward client source IP.</p>
+<p>On gateway:</p>
+<pre><code>iptables -t nat -I PREROUTING -p tcp -i eth0 --dport 8080 -j DNAT --to-destination 192.168.1.2:8080
+iptables -t nat -I POSTROUTING -p tcp -o tun0 -j SNAT --to-source 192.168.1.1 
+</code></pre>
+<p><em>Last Update: Fri Mar 11 2016 18:56:43 GMT+0800 (CST)</em>  <a href="/raw/NAT.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
