@@ -11,13 +11,15 @@ for package in $(rpm -qa); do rpm --setperms $package; done
 for package in $(rpm -qa); do rpm --setugids $package; done
 ```
 
-### Disable PING request
+### Disable PING and traceroute/MTR request
 
 For iptables rules:
 
 ```
-iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
-iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 0 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 8 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 11 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 30 -j DROP
 ```
 
 Reference:

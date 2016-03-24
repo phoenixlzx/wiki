@@ -36,17 +36,19 @@
 <pre><code>for package in $(rpm -qa); do rpm --setperms $package; done
 for package in $(rpm -qa); do rpm --setugids $package; done
 </code></pre>
-<h3><a href="#Disable_PING_request" name="Disable_PING_request" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable PING request</h3>
+<h3><a href="#Disable_PING_and_traceroute/MTR_request" name="Disable_PING_and_traceroute/MTR_request" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable PING and traceroute/MTR request</h3>
 <p>For iptables rules:</p>
-<pre><code>iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
-iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
+<pre><code>iptables -A OUTPUT -p icmp  --icmp-type 0 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 8 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 11 -j DROP
+iptables -A OUTPUT -p icmp  --icmp-type 30 -j DROP
 </code></pre>
 <p>Reference:</p>
 <ol>
 <li><a href="https://geekpeek.net/reset-file-permissions/">https://geekpeek.net/reset-file-permissions/</a></li>
 <li><a href="http://crybit.com/iptables-rules-for-icmp/">http://crybit.com/iptables-rules-for-icmp/</a></li>
 </ol>
-<p><em>Last Update: Thu Mar 24 2016 22:08:15 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
+<p><em>Last Update: Thu Mar 24 2016 22:42:22 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
@@ -115,15 +117,6 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
                     </div>
     </div>
         <div class="item">
-        <div class="header">Security</div>
-        <div class="menu">
-                        <a href="/page/DNSCrypt/" target="_self" class="item">
-                                DNSCrypt                            </a>
-                        <a href="/page/system-security-config/" target="_self" class="item">
-                                System Security Configuration                            </a>
-                    </div>
-    </div>
-        <div class="item">
         <div class="header">Server Configuration</div>
         <div class="menu">
                         <a href="/page/DNSMasq/" target="_self" class="item">
@@ -140,6 +133,15 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
                                 ethtool                            </a>
                         <a href="/page/uWSGI-PHP/" target="_self" class="item">
                                 PHP / uWSGI                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Security</div>
+        <div class="menu">
+                        <a href="/page/DNSCrypt/" target="_self" class="item">
+                                DNSCrypt                            </a>
+                        <a href="/page/system-security-config/" target="_self" class="item">
+                                System Security Configuration                            </a>
                     </div>
     </div>
         <div class="item">
