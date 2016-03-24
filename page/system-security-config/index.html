@@ -36,11 +36,17 @@
 <pre><code>for package in $(rpm -qa); do rpm --setperms $package; done
 for package in $(rpm -qa); do rpm --setugids $package; done
 </code></pre>
+<h3><a href="#Disable_PING_request" name="Disable_PING_request" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable PING request</h3>
+<p>For iptables rules:</p>
+<pre><code>iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
+</code></pre>
 <p>Reference:</p>
 <ol>
 <li><a href="https://geekpeek.net/reset-file-permissions/">https://geekpeek.net/reset-file-permissions/</a></li>
+<li><a href="http://crybit.com/iptables-rules-for-icmp/">http://crybit.com/iptables-rules-for-icmp/</a></li>
 </ol>
-<p><em>Last Update: Sun Sep 13 2015 12:56:17 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
+<p><em>Last Update: Thu Mar 24 2016 22:08:15 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
