@@ -43,13 +43,18 @@ iptables -A OUTPUT -p icmp  --icmp-type 8 -j DROP
 iptables -A OUTPUT -p icmp  --icmp-type 11 -j DROP
 iptables -A OUTPUT -p icmp  --icmp-type 30 -j DROP
 </code></pre>
+<p>To disable traceroute, add the following:</p>
+<pre><code>iptables -A INPUT -p icmp -m ttl --ttl-eq 1 -j DROP
+iptables -A INPUT -p udp -m ttl --ttl-eq 1 -j DROP
+iptables -A INPUT -p tcp -m ttl --ttl-eq 1 -j DROP
+</code></pre>
 <p>Reference:</p>
 <ol>
 <li><a href="https://geekpeek.net/reset-file-permissions/">https://geekpeek.net/reset-file-permissions/</a></li>
 <li><a href="http://crybit.com/iptables-rules-for-icmp/">http://crybit.com/iptables-rules-for-icmp/</a></li>
 <li><a href="http://serverfault.com/questions/701168">http://serverfault.com/questions/701168</a></li>
 </ol>
-<p><em>Last Update: Thu Mar 24 2016 22:45:19 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
+<p><em>Last Update: Thu Mar 24 2016 22:50:59 GMT+0800 (CST)</em>  <a href="/raw/system-security-config.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
