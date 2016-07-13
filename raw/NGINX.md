@@ -62,6 +62,20 @@ proxy_cache_key $host$uri$is_args$args;
 expires 10d;
 ```
 
+#### Reverse pass to a subdirectory (Map domain root to sub-path)
+
+```
+server {
+    listen 80;
+	server_name www.example.com;
+	location / {
+		proxy_pass http://sub.example.com/path;
+		sub_filter /path/ /; # You may need this, otherwise comment it out.
+		proxy_redirect off;
+	}
+}
+```
+
 #### Set Expires Headers For Static Content
 ```
 location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {

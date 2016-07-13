@@ -81,6 +81,17 @@ proxy_cache_valid  200 304 3d;
 proxy_cache_key $host$uri$is_args$args;
 expires 10d;
 </code></pre>
+<h4><a href="#Reverse_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" name="Reverse_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Reverse pass to a subdirectory (Map domain root to sub-path)</h4>
+<pre><code>server {
+    listen 80;
+    server_name www.example.com;
+    location / {
+        proxy_pass http://sub.example.com/path;
+        sub_filter /path/ /; # You may need this, otherwise comment it out.
+        proxy_redirect off;
+    }
+}
+</code></pre>
 <h4><a href="#Set_Expires_Headers_For_Static_Content" name="Set_Expires_Headers_For_Static_Content" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Set Expires Headers For Static Content</h4>
 <pre><code>location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
     expires 1y;
@@ -167,7 +178,7 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
 <li><a href="https://gist.github.com/michiel/1064640">Gist - michiel</a></li>
 <li><a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">Strong SSL Security on nginx</a></li>
 </ol>
-<p><em>Last Update: Fri Feb 12 2016 18:35:52 GMT+0800 (CST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
+<p><em>Last Update: Wed Jul 13 2016 14:14:01 GMT+0900 (JST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
