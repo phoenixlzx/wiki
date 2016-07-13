@@ -62,7 +62,7 @@ proxy_cache_key $host$uri$is_args$args;
 expires 10d;
 ```
 
-#### Reverse pass to a subdirectory (Map domain root to sub-path)
+#### Reverse proxy pass to a subdirectory (Map domain root to sub-path)
 
 ```
 server {

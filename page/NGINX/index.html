@@ -81,7 +81,7 @@ proxy_cache_valid  200 304 3d;
 proxy_cache_key $host$uri$is_args$args;
 expires 10d;
 </code></pre>
-<h4><a href="#Reverse_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" name="Reverse_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Reverse pass to a subdirectory (Map domain root to sub-path)</h4>
+<h4><a href="#Reverse_proxy_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" name="Reverse_proxy_pass_to_a_subdirectory_(Map_domain_root_to_sub-path)" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Reverse proxy pass to a subdirectory (Map domain root to sub-path)</h4>
 <pre><code>server {
     listen 80;
     server_name www.example.com;
@@ -178,7 +178,7 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
 <li><a href="https://gist.github.com/michiel/1064640">Gist - michiel</a></li>
 <li><a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">Strong SSL Security on nginx</a></li>
 </ol>
-<p><em>Last Update: Wed Jul 13 2016 14:14:01 GMT+0900 (JST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
+<p><em>Last Update: Wed Jul 13 2016 14:14:51 GMT+0900 (JST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
@@ -247,15 +247,6 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
                     </div>
     </div>
         <div class="item">
-        <div class="header">Security</div>
-        <div class="menu">
-                        <a href="/page/DNSCrypt/" target="_self" class="item">
-                                DNSCrypt                            </a>
-                        <a href="/page/system-security-config/" target="_self" class="item">
-                                System Security Configuration                            </a>
-                    </div>
-    </div>
-        <div class="item">
         <div class="header">Server Configuration</div>
         <div class="menu">
                         <a href="/page/DNSMasq/" target="_self" class="item">
@@ -272,6 +263,15 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
                                 ethtool                            </a>
                         <a href="/page/uWSGI-PHP/" target="_self" class="item">
                                 PHP / uWSGI                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Security</div>
+        <div class="menu">
+                        <a href="/page/DNSCrypt/" target="_self" class="item">
+                                DNSCrypt                            </a>
+                        <a href="/page/system-security-config/" target="_self" class="item">
+                                System Security Configuration                            </a>
                     </div>
     </div>
         <div class="item">
