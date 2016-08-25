@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                NTFS - PhoenixWiki            </title>
+                TCPPing - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,22 +28,20 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">OS X</a>
-<h1 class="page-title">NTFS</h1>
+<a class="ui blue ribbon label">Networking</a>
+<h1 class="page-title">TCPPing</h1>
 <div class="page-content">
-<p>Enable NTFS Read-Write on OS X using UUID.</p>
-<p>Plug-in the drive, and execute:</p>
-<pre><code>diskutil info /Volumes/DRIVENAME | grep UUID
+<h2><a href="#Installation" name="Installation" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Installation</h2>
+<pre><code>apt install tcptraceroute bc curl
 </code></pre>
-<p>Where <code>DRIVENAME</code> is your mounting drive directory name.</p>
-<p>Then write to <code>/etc/fstab</code></p>
-<pre><code>sudo echo &quot;UUID=ENTER_UUID_HERE none ntfs rw,auto,nobrowse&quot; &gt;&gt; /etc/fstab
+<p>Download the script as root</p>
+<pre><code>sudo curl -o /usr/bin/tcpping http://www.vdberg.org/~richard/tcpping
+sudo chmod 755 /usr/bin/tcpping
 </code></pre>
-<p>Unmount the disk and re-plugin it, the target disk will not show on desktop. So open it from terminal:</p>
-<pre><code>open /Volume
+<p>Pinging</p>
+<pre><code>tcpping [host] [port]
 </code></pre>
-<p>And write files to the target disk.</p>
-<p><em>Last Update: Thu Jan 21 2016 22:51:55 GMT+0800 (CST)</em>  <a href="/raw/NTFS.md">Source File</a></p>
+<p><em>Last Update: Thu Aug 25 2016 14:19:55 GMT+0800 (CST)</em>  <a href="/raw/tcpping.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
