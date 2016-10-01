@@ -8,6 +8,8 @@ category: Server Configuration
 server {
 	listen 80;
 	server_name www.example.com;
+	root /var/www/html;
+
 	location / {
 		autoindex on;
 		autoindex_exact_size off;
