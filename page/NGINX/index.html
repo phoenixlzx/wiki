@@ -31,6 +31,18 @@
 <a class="ui blue ribbon label">Server Configuration</a>
 <h1 class="page-title">NGINX</h1>
 <div class="page-content">
+<h4><a href="#Simple_Directory_Index_configuration" name="Simple_Directory_Index_configuration" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Simple Directory Index configuration</h4>
+<pre><code>server {
+    listen 80;
+    server_name www.example.com;
+    location / {
+        autoindex on;
+        autoindex_exact_size off;
+        autoindex_localtime on;
+        charset utf-8;
+    }
+}
+</code></pre>
 <h4><a href="#HTTP_Proxy" name="HTTP_Proxy" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;HTTP Proxy</h4>
 <pre><code>resolver 8.8.4.4;
 server {
@@ -178,7 +190,7 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
 <li><a href="https://gist.github.com/michiel/1064640">Gist - michiel</a></li>
 <li><a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">Strong SSL Security on nginx</a></li>
 </ol>
-<p><em>Last Update: Wed Jul 13 2016 13:14:51 GMT+0800 (CST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
+<p><em>Last Update: Sat Oct 01 2016 22:35:24 GMT+0900 (JST)</em>  <a href="/raw/NGINX.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
@@ -240,19 +252,19 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
                     </div>
     </div>
         <div class="item">
+        <div class="header">Database</div>
+        <div class="menu">
+                        <a href="/page/DB-Backup/" target="_self" class="item">
+                                Database backup                            </a>
+                    </div>
+    </div>
+        <div class="item">
         <div class="header">Security</div>
         <div class="menu">
                         <a href="/page/DNSCrypt/" target="_self" class="item">
                                 DNSCrypt                            </a>
                         <a href="/page/system-security-config/" target="_self" class="item">
                                 System Security Configuration                            </a>
-                    </div>
-    </div>
-        <div class="item">
-        <div class="header">Database</div>
-        <div class="menu">
-                        <a href="/page/DB-Backup/" target="_self" class="item">
-                                Database backup                            </a>
                     </div>
     </div>
         <div class="item">

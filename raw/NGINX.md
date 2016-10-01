@@ -1,6 +1,22 @@
 title: NGINX
 category: Server Configuration
 ---
+
+#### Simple Directory Index configuration
+
+```
+server {
+	listen 80;
+	server_name www.example.com;
+	location / {
+		autoindex on;
+		autoindex_exact_size off;
+		autoindex_localtime on;
+		charset utf-8;
+	}
+}
+```
+
 #### HTTP Proxy
 ```
 resolver 8.8.4.4;
