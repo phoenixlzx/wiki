@@ -1,5 +1,6 @@
 title: sips
 category: OS X
+time: 1476133839
 ---
 Using SIPS to convert and resize images in OS X.
 

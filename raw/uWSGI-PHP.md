@@ -1,5 +1,6 @@
 title: PHP / uWSGI
 category: Server Configuration
+time: 1476133839
 ---
 
 Install uWSGI and PHP

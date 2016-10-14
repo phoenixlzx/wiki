@@ -1,5 +1,6 @@
 title: DNSCrypt
 category: Security
+time: 1476133839
 ---
 
 Install from PPA:

@@ -1,5 +1,6 @@
 title: NGINX
 category: Server Configuration
+time: 1476133839
 ---
 
 #### Simple Directory Index configuration

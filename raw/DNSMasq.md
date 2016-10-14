@@ -1,5 +1,6 @@
 title: DNSMasq
 category: Server Configuration
+time: 1476133839
 ---
 #### Block DNS Amplification Attack
 

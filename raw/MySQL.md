@@ -1,5 +1,6 @@
 title: MySQL
 category: Server Configuration
+time: 1476133839
 ---
 
 ### InnoDB log flush once per second to increase speed

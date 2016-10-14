@@ -1,5 +1,6 @@
 title: ethtool
 category: Server Configuration
+time: 1476133839
 ---
 #### Check status of eth0
 
