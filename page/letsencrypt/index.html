@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                OpenNebula - PhoenixWiki            </title>
+                Let&#39;s Encrypt  - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,27 +28,91 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Cloud Computing</a>
-<h1 class="page-title">OpenNebula</h1>
+<a class="ui blue ribbon label">Security</a>
+<h1 class="page-title">Let&#39;s Encrypt </h1>
 <div class="page-content">
-<h4><a href="#Enable_KVM_CPU_Passthrough" name="Enable_KVM_CPU_Passthrough" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable KVM CPU Passthrough</h4>
-<p>Attributes need to be added:</p>
-<pre><code>RAW=[ DATA=&quot;&lt;cpu mode='host-passthrough'/&gt;&quot;, TYPE=&quot;kvm&quot; ]
+<h2><a href="#From_Production_Environment" name="From_Production_Environment" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;From Production Environment</h2>
+<h3><a href="#Update_NGINX_Config" name="Update_NGINX_Config" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Update NGINX Config</h3>
+<pre><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    location /.well-known {
+        default_type &quot;text/plain&quot;;
+        root /var/www/html; # or use distro-default directory
+    }
+
+    location / {
+        # origin configuration
+    }
+}
 </code></pre>
-<ol>
-<li>Choose your VM template</li>
-<li>Click on 'UPDATE'</li>
-<li>Click on 'Other'</li>
-<li>From the 'RAW data' dropdown menu, choose 'KVM'</li>
-<li>In the DATA text box, insert:</li>
-</ol>
-<pre><code>&quot;&lt;cpu mode='host-passthrough'/&gt;&quot;
+<h3><a href="#Install_Certbot" name="Install_Certbot" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Install Certbot</h3>
+<pre><code>wget -c https://dl.eff.org/certbot-auto
+./certbot-auto
 </code></pre>
-<p>References:</p>
-<ul>
-<li><a href="http://dev.opennebula.org/issues/2869">OpenNebula Backlog</a></li>
-</ul>
-<p><em>Last Update: Fri Oct 14 2016 17:31:55 GMT+0900 (JST)</em>  <a href="/raw/OpenNebula.md">Source File</a></p>
+<h3><a href="#Setup_SSL_Certificate" name="Setup_SSL_Certificate" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Setup SSL Certificate</h3>
+<h4><a href="#Generate_DHParams" name="Generate_DHParams" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Generate DHParams</h4>
+<pre><code>cd /etc/ssl/certs
+openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
+</code></pre>
+<h4><a href="#Request_Certificate" name="Request_Certificate" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Request Certificate</h4>
+<pre><code>./certbot certonly --webroot -w /var/www/html -d example.com -d www.example.com
+</code></pre>
+<h4><a href="#Setup_Cron_Job" name="Setup_Cron_Job" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Setup Cron Job</h4>
+<pre><code>24  15  *   *   2,5 /path/to/certbot/certbot-auto renew --quiet --no-self-upgrade
+</code></pre>
+<h4><a href="#Update_NGINX_Config" name="Update_NGINX_Config" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Update NGINX Config</h4>
+<pre><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    location /.well-known {
+        default_type &quot;text/plain&quot;;
+        root /var/www/html;
+    }
+
+    location / {
+        return 301 https://example.com$request_uri; # or keep origin config if you don't want to force redirect to https
+    }
+}
+
+server {
+    listen 443 ssl http2; # remove http2 if nginx version &lt; 1.10 
+    listen [::]:443 ssl http2;
+    server_name example.com www.example.com;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers &quot;EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4&quot;;
+    keepalive_timeout    70;
+    ssl_session_cache    shared:SSL:10m;
+    ssl_session_timeout  10m;
+
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+    add_header Strict-Transport-Security max-age=63072000;
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+
+    access_log /var/log/nginx/example.access.log;
+    error_log /var/log/nginx/example.error.log;
+
+    root /var/www/example;
+
+    location / {
+        # origin config
+    }
+}
+</code></pre>
+<h4><a href="#Test_NGINX_config_and_reload_service" name="Test_NGINX_config_and_reload_service" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Test NGINX config and reload service</h4>
+<pre><code>nginx -t
+service nginx restart
+</code></pre>
+<p><em>Last Update: Wed Oct 19 2016 12:08:02 GMT+0900 (JST)</em>  <a href="/raw/letsencrypt.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
