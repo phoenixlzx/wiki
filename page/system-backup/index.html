@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                DNSCrypt - PhoenixWiki            </title>
+                System Backup  - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,25 +28,19 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Security</a>
-<h1 class="page-title">DNSCrypt</h1>
+<a class="ui blue ribbon label">System Administration</a>
+<h1 class="page-title">System Backup </h1>
 <div class="page-content">
-<p>Install from PPA:</p>
-<pre><code>sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:xuzhen666/dnscrypt
-sudo apt-get update &amp;&amp; sudo apt-get install dnscrypt-proxy
+<h2><a href="#Rsync" name="Rsync" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Rsync</h2>
+<pre><code>rsync --archive --one-file-system --hard-links \
+  --acls --xattrs --sparse \
+  --human-readable --numeric-ids --delete --delete-excluded \
+  --itemize-changes --verbose --progress \
+  --exclude='*~' \
+  --exclude-from=root.exclude \
+  src dest
 </code></pre>
-<p>Append HK server by d0wn to <code>/usr/share/dnscrypt-proxy/dnscrypt-resolvers.csv</code></p>
-<pre><code>d0wn-hk-ns1,d0wn server in Hong Kong,Server provided by Martin 'd0wn' Albus,Hong Kong,,https://dns.d0wn.biz,1,no,yes,yes,119.81.242.146:54,2.dnscrypt-cert.hk.d0wn.biz,9E3E:203F:7446:A15E:4451:9095:A5D2:A65E:2B48:9736:5AD2:4760:6627:8F33:0327:5382,
-</code></pre>
-<p>Update <code>/etc/default/dnscrypt-proxy</code></p>
-<pre><code>DNSCRYPT_PROXY_LOCAL_ADDRESS=127.0.0.1:53  # Change to another port if you have local dns service
-
-DNSCRYPT_PROXY_RESOLVER_NAME=d0wn-hk-ns1
-
-DNSCRYPT_PROXY_OPTIONS=&quot;--ephemeral-keys&quot;
-</code></pre>
-<p><em>Last Update: Fri Oct 14 2016 17:32:20 GMT+0900 (JST)</em>  <a href="/raw/DNSCrypt.md">Source File</a></p>
+<p><em>Last Update: Wed Nov 09 2016 15:33:44 GMT+0900 (JST)</em>  <a href="/raw/system-backup.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
