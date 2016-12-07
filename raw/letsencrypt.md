@@ -48,8 +48,10 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
 #### Setup Cron Job
 
 ```
-24	15	*	*	2,5	/path/to/certbot/certbot-auto renew --quiet --no-self-upgrade
+24	15	*	*	2,5	/path/to/certbot/certbot-auto renew --quiet --no-self-upgrade && service nginx reload
 ```
+
+* If you are using systemd, change to `systemctl reload nginx`.
 
 #### Update NGINX Config
 

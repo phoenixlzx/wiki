@@ -60,8 +60,11 @@ openssl dhparam -out dhparam.pem 4096 # use 2048 if you are on a low-end-box.
 <pre><code>./certbot certonly --webroot -w /var/www/html -d example.com -d www.example.com
 </code></pre>
 <h4><a href="#Setup_Cron_Job" name="Setup_Cron_Job" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Setup Cron Job</h4>
-<pre><code>24  15  *   *   2,5 /path/to/certbot/certbot-auto renew --quiet --no-self-upgrade
+<pre><code>24  15  *   *   2,5 /path/to/certbot/certbot-auto renew --quiet --no-self-upgrade &amp;&amp; service nginx reload
 </code></pre>
+<ul>
+<li>If you are using systemd, change to <code>systemctl reload nginx</code>.</li>
+</ul>
 <h4><a href="#Update_NGINX_Config" name="Update_NGINX_Config" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Update NGINX Config</h4>
 <pre><code>server {
     listen 80;
@@ -112,7 +115,7 @@ server {
 <pre><code>nginx -t
 service nginx restart
 </code></pre>
-<p><em>Last Update: Wed Oct 19 2016 12:08:02 GMT+0900 (JST)</em>  <a href="/raw/letsencrypt.md">Source File</a></p>
+<p><em>Last Update: Wed Dec 07 2016 22:24:58 GMT+0900 (JST)</em>  <a href="/raw/letsencrypt.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
