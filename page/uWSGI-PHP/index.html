@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Phoenix Nemo">
+    <meta name="description" content="Phoenix&#39;s Wiki">
+    <title>
+                PHP / uWSGI - PhoenixWiki            </title>
+    <link href="/assets/semantic.min.css" rel="stylesheet"/>
+    <link href="/assets/style.css" rel="stylesheet"/>
+    <!-- <script src="/assets/semantic.min.js"></script> -->
+    <script src="/assets/highlight.min.js"></script>
+    <base target="_blank">
+</head>
+<body>
+<div style="margin-bottom: 80px;">
+    <div class="ui container">
+        <div class="ui dividing header">
+            <h1 class="heading">
+                <a href="/" class="logo-text" target="_self">
+                    PhoenixWiki                </a>
+            </h1>
+            <small>Sun will shine on the horizon.</small>
+        </div>
+<div class="ui grid">
+<div class="twelve wide column">
+<div class="column">
+<div class="ui raised segment">
+<a class="ui blue ribbon label">Server Configuration</a>
+<h1 class="page-title">PHP / uWSGI</h1>
+<div class="page-content">
+<p>Install uWSGI and PHP</p>
+<pre><code>apt-get install php5-cgi php5-mysql php5-curl php5-gd php5-idn php-pear php5-imap php5-mcrypt php5-mhash php5-pspell php5-recode php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+apt-get install uwsgi uwsgi-plugin-php supervisor
+</code></pre>
+<p>Create config file <code>/etc/uwsgi/apps-available/uwsgi-php.ini</code></p>
+<pre><code>[uwsgi]
+plugins = php
+
+; leave the master running as root (to allows bind on unix socket or low ports)
+master = true
+master-as-root = true
+
+; listening on unix socket
+socket = /var/run/uwsgi-php.sock
+chown-socket = www-data:www-data
+
+; drop privileges
+uid = www-data
+gid = www-data
+
+; our working dir
+project_dir = /var/www
+
+; load additional PHP module ini files
+env = PHP_INI_SCAN_DIR=/etc/php5/embed/conf.d
+
+; ; or if you need to specify another PHP.ini
+; php-ini = /etc/php5/embed/php.ini
+; ; then load additional php module ini files manually
+; for-glob = /etc/php5/embed/conf.d/*.ini
+;   php-ini-append = %(_)
+; endfor =
+
+; allow .php and .inc extensions
+php-allowed-ext = .php
+php-allowed-ext = .inc
+
+; set php timezone
+php-set = date.timezone=UTC
+
+; disable uWSGI request logging
+disable-logging = true
+; use a max of 10 processes
+processes = 10
+; ...but start with only 2 and spawn the others on demand
+cheaper = 2
+
+; increase buffer size
+buffer-size = 32768
+</code></pre>
+<p>and do <code>ln -s /etc/uwsgi/apps-available/uwsgi-php.ini /etc/uwsgi/apps-enabled/uwsgi-php.ini</code></p>
+<p>In NGINX site config</p>
+<pre><code>location ~ \.php$ {
+    include uwsgi_params;
+    uwsgi_modifier1 14;
+    uwsgi_pass unix:/var/run/uwsgi-php.sock;
+}
+</code></pre>
+<p>Create <code>/etc/supervisor/conf.d/uwsgi-php.conf</code></p>
+<pre><code>[program:uwsgi-php]
+command = uwsgi --ini /etc/uwsgi/apps-enabled/uwsgi-php.ini
+autorestart = true
+user = root
+stderr_logfile = /var/log/supervisor/uwsgi-php.log
+logfile_maxbytes = 1048576
+logfile_backups = 10
+</code></pre>
+<p>Note for <code>user = root</code>: uWSGI drops privilege in it's own config. User root is needed for creating sockets or listening on low ports.</p>
+<p>Restart all services to take effect</p>
+<pre><code>service supervisor restart
+service nginx restart
+</code></pre>
+<p>Reference:</p>
+<ol>
+<li><a href="http://uwsgi-docs.readthedocs.org/en/latest/PHP.html">Running PHP scripts in uWSGI</a></li>
+<li><a href="http://uwsgi-docs.readthedocs.org/en/latest/Options.html#php-ini">uWSGI Options - php.ini</a></li>
+<li><a href="http://lists.unbit.it/pipermail/uwsgi/2014-April/007200.html">[uWSGI] uwsgi and PHP_INI_SCAN_DIR</a></li>
+</ol>
+<p><em>Last Update: Fri Oct 14 2016 17:31:40 GMT+0900 (JST)</em>  <a href="/raw/uWSGI-PHP.md">Source File</a></p>
+</div>
+<div>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'phoenixwiki';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+</div>
+</div>
+<div class="four wide column">
+<div class="column">
+<div class="ui card">
+    <div class="image">
+        <img class="sidebar-avatar" src="/static/img/avatar.m.jpg">
+    </div>
+    <div class="content">
+        <a class="header">Phoenix Nemo</a>
+        <div class="meta">
+            <span class="date">me@v9.org</span>
+        </div>
+        <div class="description">
+            DevOps | ACG | Open Source
+        </div>
+    </div>
+    <div class="extra content" style="text-align: center">
+        <a href="https://github.com/phoenixlzx" class="item">
+            <i class="github icon large"></i>
+        </a>
+        <a href="https://plus.google.com/105617369231288600669" class="item">
+            <i class="google plus icon large"></i>
+        </a>
+        <a href="https://twitter.com/phoenixlzx" class="item">
+            <i class="twitter icon large"></i>
+        </a>
+    </div>
+</div>
+<div class="ui vertical menu sidebar-column">
+    <div class="item">
+        <div class="header"><a href="/" target="_self">Homepage</a></div>
+                <div class="header"><a href="/changelog/">Changelog</a></div>
+            </div>
+        <div class="item">
+        <div class="header">Gaming</div>
+        <div class="menu">
+                        <a href="/page/CounterStrike/" target="_self" class="item">
+                                Counter Strike                             </a>
+                        <a href="/page/Minecraft/" target="_self" class="item">
+                                Minecraft                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Database</div>
+        <div class="menu">
+                        <a href="/page/DB-Backup/" target="_self" class="item">
+                                Database backup                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Security</div>
+        <div class="menu">
+                        <a href="/page/DNSCrypt/" target="_self" class="item">
+                                DNSCrypt                            </a>
+                        <a href="/page/letsencrypt/" target="_self" class="item">
+                                Let&#39;s Encrypt                             </a>
+                        <a href="/page/system-security-config/" target="_self" class="item">
+                                System Security Configuration                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Server Configuration</div>
+        <div class="menu">
+                        <a href="/page/DNSMasq/" target="_self" class="item">
+                                DNSMasq                            </a>
+                        <a href="/page/MySQL/" target="_self" class="item">
+                                MySQL                            </a>
+                        <a href="/page/NGINX/" target="_self" class="item">
+                                NGINX                            </a>
+                        <a href="/page/PHP/" target="_self" class="item">
+                                PHP                            </a>
+                        <a href="/page/Postfix/" target="_self" class="item">
+                                Postfix                            </a>
+                        <a href="/page/ethtool/" target="_self" class="item">
+                                ethtool                            </a>
+                        <a href="/page/uWSGI-PHP/" target="_self" class="item">
+                                PHP / uWSGI                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Networking</div>
+        <div class="menu">
+                        <a href="/page/IP-Rules/" target="_self" class="item">
+                                IP Rules                            </a>
+                        <a href="/page/NAT/" target="_self" class="item">
+                                NAT                            </a>
+                        <a href="/page/tcpping/" target="_self" class="item">
+                                TCPPing                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">OS X</div>
+        <div class="menu">
+                        <a href="/page/NTFS/" target="_self" class="item">
+                                NTFS                            </a>
+                        <a href="/page/sips/" target="_self" class="item">
+                                sips                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">Cloud Computing</div>
+        <div class="menu">
+                        <a href="/page/OpenNebula/" target="_self" class="item">
+                                OpenNebula                            </a>
+                    </div>
+    </div>
+        <div class="item">
+        <div class="header">System Administration</div>
+        <div class="menu">
+                        <a href="/page/system-backup/" target="_self" class="item">
+                                System Backup                             </a>
+                    </div>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+    </div>
+</div>
+<div class="footer">
+    <div class="footer-text">
+        PhoenixWiki using <a href="https://github.com/phoenixlzx/MinoriWiki" target="_blank">MinoriWiki</a>
+    </div>
+</div>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
