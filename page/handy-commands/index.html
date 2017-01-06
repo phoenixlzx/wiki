@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                sips - PhoenixWiki            </title>
+                Handy Commands &amp; Scripts - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,25 +28,17 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">OS X</a>
-<h1 class="page-title">sips</h1>
+<a class="ui blue ribbon label">System Administration</a>
+<h1 class="page-title">Handy Commands &amp; Scripts</h1>
 <div class="page-content">
-<p>Using SIPS to convert and resize images in OS X.</p>
-<h3><a href="#Convert_format" name="Convert_format" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Convert format</h3>
-<pre><code>sips -s format png image.jpg --out png/image.png
+<h2><a href="#Copy_specified_file/directory_and_keep_folder_structure" name="Copy_specified_file/directory_and_keep_folder_structure" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Copy specified file/directory and keep folder structure</h2>
+<pre><code>find . -name 'filename.ext' -exec cp --parents \{\} [target directory] \;
 </code></pre>
-<p>Batch command</p>
-<pre><code>mkdir -p png
-for i in *.jpg; do sips -s format png $i --out png/$i.png;done
-</code></pre>
-<h3><a href="#Resize" name="Resize" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Resize</h3>
-<p>Resize size to 512px on max width/height, and keep the aspect ratio.</p>
-<pre><code>sips -Z 512 image.png
-</code></pre>
-<h3><a href="#Set_DPI" name="Set_DPI" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Set DPI</h3>
-<pre><code>sips -s dpiHeight 72 -s dpiWidth 72 image.png
-</code></pre>
-<p><em>Last Update: Fri Oct 14 2016 17:31:47 GMT+0900 (JST)</em>  <a href="/raw/sips.md">Source File</a></p>
+<p>References</p>
+<ul>
+<li><a href="http://unix.stackexchange.com/questions/83593/">Copy specific file type keeping the folder structure</a></li>
+</ul>
+<p><em>Last Update: Fri Jan 06 2017 11:52:04 GMT+0900 (JST)</em>  <a href="/raw/handy-commands.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
