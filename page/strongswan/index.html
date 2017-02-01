@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                DNSMasq - PhoenixWiki            </title>
+                Strongswan - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -29,31 +29,107 @@
 <div class="column">
 <div class="ui raised segment">
 <a class="ui blue ribbon label">Server Configuration</a>
-<h1 class="page-title">DNSMasq</h1>
+<h1 class="page-title">Strongswan</h1>
 <div class="page-content">
-<h4><a href="#Block_DNS_Amplification_Attack" name="Block_DNS_Amplification_Attack" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Block DNS Amplification Attack</h4>
-<p>Add to IPTables rules:</p>
-<pre><code># Create a chain to store block rules in
-iptables -N BADDNS
-# Match all &quot;IN ANY&quot; DNS Queries, and run them past the BADDNS chain.
-iptables -A INPUT -p udp --dport 53 -m string --hex-string &quot;|00 00 ff 00 01|&quot; --to 255 --algo bm -m comment --comment &quot;IN ANY?&quot; -j BADDNS
-iptables -A FORWARD -p udp --dport 53 -m string --hex-string &quot;|00 00 ff 00 01|&quot; --to 255 --algo bm -m comment --comment &quot;IN ANY?&quot; -j BADDNS
-# Block domains that are being used for DNS Amplification...
-iptables -A BADDNS -m string --hex-string &quot;|04 72 69 70 65 03 6e 65 74 00|&quot; --algo bm -j DROP --to 255 -m comment --comment &quot;ripe.net&quot;
-iptables -A BADDNS -m string --hex-string &quot;|03 69 73 63 03 6f 72 67 00|&quot; --algo bm -j DROP --to 255 -m comment --comment &quot;isc.org&quot;
-iptables -A BADDNS -m string --hex-string &quot;|04 73 65 6d 61 02 63 7a 00|&quot; --algo bm -j DROP --to 255 -m comment --comment &quot;sema.cz&quot;
-iptables -A BADDNS -m string --hex-string &quot;|09 68 69 7a 62 75 6c 6c 61 68 02 6d 65 00|&quot; --algo bm -j DROP --to 255 -m comment --comment &quot;hizbullah.me&quot;
-# Rate limit the rest.
-iptables -A BADDNS -m recent --set --name DNSQF --rsource
-iptables -A BADDNS -m recent --update --seconds 10 --hitcount 1 --name DNSQF --rsource -j DROP
+<h2><a href="#Compile_Strongswan_>_5.5.2" name="Compile_Strongswan_>_5.5.2" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Compile Strongswan &gt; 5.5.2</h2>
+<pre><code>./configure  --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap  --enable-eap-tnc --enable-eap-dynamic --enable-eap-radius --enable-xauth-eap  --enable-xauth-pam  --enable-dhcp  --enable-openssl  --enable-addrblock --enable-unity  --enable-certexpire --enable-radattr --enable-swanctl --enable-openssl --disable-gmp
 </code></pre>
-<h4><a href="#DNS_Amplification_IPTABLES_block_lists" name="DNS_Amplification_IPTABLES_block_lists" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;DNS Amplification IPTABLES block lists</h4>
-<p>https://github.com/smurfmonitor/dns-iptables-rules</p>
+<h2><a href="#Apply_for_SINGLE_DOMAIN_Certificate" name="Apply_for_SINGLE_DOMAIN_Certificate" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Apply for SINGLE DOMAIN Certificate</h2>
+<ul>
+<li><code>caCert.pem</code> for Root CA and Intermediate</li>
+<li><code>serverCert.pem</code> for Certificate</li>
+<li><code>serverKey.pem</code> for Private Key</li>
+</ul>
+<pre><code>mkdir -p /usr/local/etc/ipsec.d/{certs,cacerts,private}
+cp caCert.pem /usr/local/etc/ipsec.d/cacerts/
+cp serverCert.pem /usr/local/etc/ipsec.d/certs/
+cp serverKey.pem /usr/local/etc/ipsec.d/private/
+</code></pre>
+<h2><a href="#Authentication" name="Authentication" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Authentication</h2>
+<p><code>/usr/local/etc/ipsec.secrets</code></p>
+<pre><code>: RSA serverKey.pem
+username : EAP &quot;password&quot;
+username : XAUTH &quot;password&quot;
+</code></pre>
+<h2><a href="#Push_DNS" name="Push_DNS" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Push DNS</h2>
+<p><code>/usr/local/etc/strongswan.conf</code></p>
+<pre><code># strongswan.conf - strongSwan configuration file
+#
+# Refer to the strongswan.conf(5) manpage for details
+#
+# Configuration changes should be made in the included files
+
+charon {
+  load_modular = yes
+  duplicheck.enable = no
+  compress = yes
+  dns1 = 8.8.8.8
+  dns2 = 8.8.4.4
+  plugins {
+    include strongswan.d/charon/*.conf
+  }
+}
+include strongswan.d/*.conf
+</code></pre>
+<h2><a href="#IPSec" name="IPSec" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;IPSec</h2>
+<p><code>/usr/local/etc/ipsec.conf</code></p>
+<pre><code>config setup
+  uniqueids = never
+conn ikev2ios
+  keyexchange = ikev2
+  ike=aes256-sha256-modp2048,3des-sha1-modp2048,aes256-sha1-modp2048,aes256-sha1-modp1024,aes128-sha1-modp1024!
+  esp = aes256-sha256,3des-sha1,aes256-sha1!
+  dpdaction=clear
+  dpddelay=300s
+  rekey=no
+  left = %any
+  leftid = your.domain.example.com
+  leftsendcert = always
+  leftcert = serverCert.pem
+  leftsubnet = 0.0.0.0/0
+  right = %any
+  rightauth = eap-mschapv2
+  rightsourceip = 10.99.1.0/24
+  rightsendcert=never
+  eap_identity = %any
+  auto = add
+  fragmentation = yes
+conn ikev1android
+  keyexchange = ikev1
+  left = %any
+  leftid = your.domain.example.com
+  leftsendcert = always
+  leftcert = serverCert.pem
+  leftsubnet = 0.0.0.0/0
+  right = %any
+  rightauth = xauth
+  rightsourceip = 10.99.1.0/24
+  auto = add
+</code></pre>
+<h2><a href="#NAT_Rules_&_IP_forward" name="NAT_Rules_&_IP_forward" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;NAT Rules &amp; IP forward</h2>
+<pre><code>sysctl -w net.ipv4.ip_forward=1
+iptables -t nat -I POSTROUTING -s 10.99.1.0/24 -j POSTROUTING
+</code></pre>
+<h2><a href="#Start_&_debug" name="Start_&_debug" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Start &amp; debug</h2>
+<pre><code>ipsec start
+ipsec stop
+ipsec start --nofork # debug
+ipsec restart
+ipsec reload
+</code></pre>
+<h2><a href="#Connecting" name="Connecting" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Connecting</h2>
+<h4><a href="#For_iOS" name="For_iOS" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;For iOS</h4>
+<ul>
+<li>VPN -&gt; IKEv2</li>
+<li>Server -&gt; Domain</li>
+<li>ID -&gt; Domain</li>
+</ul>
+<hr />
 <p>Reference:</p>
-<ol>
-<li><a href="http://blog.dataforce.org.uk/2013/08/limiting-the-effectiveness-of-dns-amplification/">Dataforce</a></li>
-</ol>
-<p><em>Last Update: Fri Oct 14 2016 17:32:17 GMT+0900 (JST)</em>  <a href="/raw/DNSMasq.md">Source File</a></p>
+<ul>
+<li><a href="https://49.gs/post/2017-02-01">zFox49's Blog</a></li>
+</ul>
+<p><em>Last Update: Wed Feb 01 2017 14:18:20 GMT+0900 (JST)</em>  <a href="/raw/strongswan.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
