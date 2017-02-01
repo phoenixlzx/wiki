@@ -120,6 +120,10 @@ ipsec reload
 * Server -> Domain
 * ID -> Domain
 
+## Firewall Rules
+
+Make sure `500/udp` and `4500/udp` is open for connection.
+
 ---
 
 Reference:
