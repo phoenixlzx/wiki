@@ -122,7 +122,7 @@ ipsec reload
 
 ## Firewall Rules
 
-Make sure `500/udp` and `4500/udp` is open for connection.
+Make sure `500/udp` and `4500/udp` are open for connection.
 
 ---
 
