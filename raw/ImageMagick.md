@@ -9,10 +9,10 @@ time: 1486210417848
 mogrify -format png *.jpg
 ```
 
-## Resize on larger side
+## Resize on largest dimension
 
 ```
-convert -resize "100>" image.png
+convert -resize "100x100>" image.png
 ```
 
 ## Optimize PNG
