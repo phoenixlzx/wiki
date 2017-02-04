@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                TCPPing - PhoenixWiki            </title>
+                ImageMagick - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,20 +28,19 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Networking</a>
-<h1 class="page-title">TCPPing</h1>
+<a class="ui blue ribbon label">Tools</a>
+<h1 class="page-title">ImageMagick</h1>
 <div class="page-content">
-<h2><a href="#Installation" name="Installation" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Installation</h2>
-<pre><code>apt install tcptraceroute bc curl
+<h2><a href="#Batch_Operation" name="Batch_Operation" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Batch Operation</h2>
+<pre><code>mogrify -format png *.jpg
 </code></pre>
-<p>Download the script as root</p>
-<pre><code>sudo curl -o /usr/bin/tcpping http://www.vdberg.org/~richard/tcpping
-sudo chmod 755 /usr/bin/tcpping
+<h2><a href="#Resize_on_larger_side" name="Resize_on_larger_side" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Resize on larger side</h2>
+<pre><code>convert -resize &quot;100&gt;&quot; image.png
 </code></pre>
-<p>Pinging</p>
-<pre><code>tcpping [host] [port]
+<h2><a href="#Optimize_PNG" name="Optimize_PNG" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Optimize PNG</h2>
+<pre><code>optipng -o5 image.png
 </code></pre>
-<p><em>Last Update: Fri Oct 14 2016 17:31:42 GMT+0900 (JST)</em>  <a href="/raw/tcpping.md">Source File</a></p>
+<p><em>Last Update: Sat Feb 04 2017 21:15:46 GMT+0900 (JST)</em>  <a href="/raw/ImageMagick.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
