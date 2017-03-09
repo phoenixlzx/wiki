@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                NTFS - PhoenixWiki            </title>
+                SSH - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,22 +28,20 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">OS X</a>
-<h1 class="page-title">NTFS</h1>
+<a class="ui blue ribbon label">Server Configuration </a>
+<h1 class="page-title">SSH</h1>
 <div class="page-content">
-<p>Enable NTFS Read-Write on OS X using UUID.</p>
-<p>Plug-in the drive, and execute:</p>
-<pre><code>diskutil info /Volumes/DRIVENAME | grep UUID
+<h2><a href="#SSH_PortForwarding" name="SSH_PortForwarding" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;SSH PortForwarding</h2>
+<h3><a href="#Enable_IP_Forwarding" name="Enable_IP_Forwarding" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable IP Forwarding</h3>
+<pre><code>sudo sysctl net.ipv4.ip_forward=1
 </code></pre>
-<p>Where <code>DRIVENAME</code> is your mounting drive directory name.</p>
-<p>Then write to <code>/etc/fstab</code></p>
-<pre><code>sudo echo &quot;UUID=ENTER_UUID_HERE none ntfs rw,auto,nobrowse&quot; &gt;&gt; /etc/fstab
+<h3><a href="#Forward_traffic_on_port_2222_to_IP_10.0.0.2_on_port_22" name="Forward_traffic_on_port_2222_to_IP_10.0.0.2_on_port_22" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Forward traffic on port 2222 to IP 10.0.0.2 on port 22</h3>
+<pre><code>sudo iptables -t nat -A PREROUTING -p tcp --dport 2222 -j DNAT --to-destination 10.0.0.2:22
 </code></pre>
-<p>Unmount the disk and re-plugin it, the target disk will not show on desktop. So open it from terminal:</p>
-<pre><code>open /Volume
+<h3><a href="#Masquerade" name="Masquerade" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Masquerade</h3>
+<pre><code>sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 </code></pre>
-<p>And write files to the target disk.</p>
-<p><em>Last Update: Fri Oct 14 2016 17:31:58 GMT+0900 (JST)</em>  <a href="/raw/NTFS.md">Source File</a></p>
+<p><em>Last Update: Fri Mar 10 2017 01:34:34 GMT+0900 (JST)</em>  <a href="/raw/SSH.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
