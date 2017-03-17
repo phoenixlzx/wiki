@@ -2,7 +2,9 @@ title: PHP
 category: Server Configuration
 time: 1476133839
 ---
+
 #### PHP-FPM Installation on Ubuntu Server
+
 ```
 apt-get install software-properties-common
 # Ubuntu 12.04 and before:
@@ -17,7 +19,14 @@ apt-get install nginx
 apt-get install php5-cgi php5-mysql php5-fpm php5-curl php5-gd php5-idn php-pear php5-imap php5-mcrypt php5-mhash php5-pspell php5-recode php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 ```
 
+For Ubuntu 16.04 & PHP7
+
+```
+apt install nginx mysql-server git unzip curl php-fpm php-mysql php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-xml php7.0-tidy php7.0-sqlite3 php7.0-gd php7.0-imap php7.0-json php7.0-ldap
+```
+
 #### PHP-FPM Installation on Debian Server
+
 ```
 wget http://www.dotdeb.org/dotdeb.gpg -O - | apt-key add -
 
