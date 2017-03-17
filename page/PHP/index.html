@@ -47,6 +47,9 @@ apt-get install php5-cgi php5-mysql php5-fpm php5-curl php5-gd php5-idn php-pear
 <p>For Ubuntu 16.04 &amp; PHP7</p>
 <pre><code>apt install nginx mysql-server git unzip curl php-fpm php-mysql php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-xml php7.0-tidy php7.0-sqlite3 php7.0-gd php7.0-imap php7.0-json php7.0-ldap
 </code></pre>
+<p>File <code>/etc/php/7.0/fpm/php.ini</code></p>
+<pre><code>cgi.fix_pathinfo=0
+</code></pre>
 <h4><a href="#PHP-FPM_Installation_on_Debian_Server" name="PHP-FPM_Installation_on_Debian_Server" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;PHP-FPM Installation on Debian Server</h4>
 <pre><code>wget http://www.dotdeb.org/dotdeb.gpg -O - | apt-key add -
 
@@ -107,7 +110,7 @@ ioncube should be loaded before any zend extension.</p>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-ioncube-loader">DigitalOcean Tutorials</a></li>
 <li><a href="http://askubuntu.com/questions/484921/php5-imap-on-ubunut-14-04-is-not-enabled">AskUbuntu</a></li>
 </ol>
-<p><em>Last Update: Fri Mar 17 2017 12:17:28 GMT+0900 (JST)</em>  <a href="/raw/PHP.md">Source File</a></p>
+<p><em>Last Update: Fri Mar 17 2017 12:18:43 GMT+0900 (JST)</em>  <a href="/raw/PHP.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>

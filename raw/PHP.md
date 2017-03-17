@@ -25,6 +25,13 @@ For Ubuntu 16.04 & PHP7
 apt install nginx mysql-server git unzip curl php-fpm php-mysql php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-xml php7.0-tidy php7.0-sqlite3 php7.0-gd php7.0-imap php7.0-json php7.0-ldap
 ```
 
+File `/etc/php/7.0/fpm/php.ini`
+
+```
+cgi.fix_pathinfo=0
+```
+
+
 #### PHP-FPM Installation on Debian Server
 
 ```
