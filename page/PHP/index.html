@@ -83,7 +83,7 @@ EOF
         fastcgi_pass php;
     }
 </code></pre>
-<h4><a href="#ionCube_Installation_on_Ubuntu_14.04,_php_5.5.9_and_later" name="ionCube_Installation_on_Ubuntu_14.04,_php_5.5.9_and_later" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;ionCube Installation on Ubuntu 14.04, php 5.5.9 and later</h4>
+<h4><a href="#ionCube_Installation_on_Ubuntu_14.04,_php_5.5.9" name="ionCube_Installation_on_Ubuntu_14.04,_php_5.5.9" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;ionCube Installation on Ubuntu 14.04, php 5.5.9</h4>
 <pre><code>wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
 tar xvfz ioncube_loaders_lin_x86-64.tar.gz
 cp ioncube/ioncube_loader_lin_5.5.so /usr/lib/php5/
@@ -98,6 +98,19 @@ Note: ionCube is not compatitable with php5-xcache in PHP 5.5.9.<br />
 ioncube should be loaded before any zend extension.</p>
 <pre><code>ln -s /etc/php5/mods-available/ioncube.ini /etc/php5/{fpm,cli}/conf.d/01-ioncube.ini
 </code></pre>
+<h4><a href="#ionCube_Installation_on_Ubuntu_16.04,_php_7.0_and_later" name="ionCube_Installation_on_Ubuntu_16.04,_php_7.0_and_later" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;ionCube Installation on Ubuntu 16.04, php 7.0 and later</h4>
+<pre><code>wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+tar xvfz ioncube_loaders_lin_x86-64.tar.gz
+cp ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012/
+</code></pre>
+<p>Create config file:</p>
+<pre><code>tee /etc/php/7.0/mods-available/ioncube.ini &lt;&lt; EOF
+zend_extension = &quot;/usr/lib/php/20151012/ioncube_loader_lin_7.0.so&quot;
+EOF
+</code></pre>
+<p>Symlinking</p>
+<pre><code>ln -s /etc/php/7.0/mods-available/ioncube.ini /etc/php/7.0/{fpm,cli}/conf.d/00-ioncube.ini
+</code></pre>
 <h4><a href="#Some_PHP_functions_to_be_disabled:" name="Some_PHP_functions_to_be_disabled:" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Some PHP functions to be disabled:</h4>
 <pre><code>exec, shell_exec, popen, system, passthru, escapeshellarg, escapeshellcmd, symlink
 </code></pre>
@@ -110,7 +123,7 @@ ioncube should be loaded before any zend extension.</p>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-ioncube-loader">DigitalOcean Tutorials</a></li>
 <li><a href="http://askubuntu.com/questions/484921/php5-imap-on-ubunut-14-04-is-not-enabled">AskUbuntu</a></li>
 </ol>
-<p><em>Last Update: Fri Mar 17 2017 12:18:43 GMT+0900 (JST)</em>  <a href="/raw/PHP.md">Source File</a></p>
+<p><em>Last Update: Fri Mar 17 2017 12:25:50 GMT+0900 (JST)</em>  <a href="/raw/PHP.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>

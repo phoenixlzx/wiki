@@ -73,7 +73,7 @@ In any site configurations:
     }
 ```
 
-#### ionCube Installation on Ubuntu 14.04, php 5.5.9 and later
+#### ionCube Installation on Ubuntu 14.04, php 5.5.9 
 
 ```
 wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
@@ -93,6 +93,27 @@ Note: ionCube is not compatitable with php5-xcache in PHP 5.5.9.
 ioncube should be loaded before any zend extension.
 ```
 ln -s /etc/php5/mods-available/ioncube.ini /etc/php5/{fpm,cli}/conf.d/01-ioncube.ini
+```
+
+#### ionCube Installation on Ubuntu 16.04, php 7.0 and later
+
+```
+wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+tar xvfz ioncube_loaders_lin_x86-64.tar.gz
+cp ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012/
+```
+
+Create config file:
+```
+tee /etc/php/7.0/mods-available/ioncube.ini << EOF
+zend_extension = "/usr/lib/php/20151012/ioncube_loader_lin_7.0.so"
+EOF
+```
+
+Symlinking
+
+```
+ln -s /etc/php/7.0/mods-available/ioncube.ini /etc/php/7.0/{fpm,cli}/conf.d/00-ioncube.ini
 ```
 
 #### Some PHP functions to be disabled:
