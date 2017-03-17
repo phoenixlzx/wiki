@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                iptables - PhoenixWiki            </title>
+                Ubuntu APT - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,21 +28,16 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Security</a>
-<h1 class="page-title">iptables</h1>
+<a class="ui blue ribbon label">Server Configuration</a>
+<h1 class="page-title">Ubuntu APT</h1>
 <div class="page-content">
-<h2><a href="#Save_rules_and_apply_at_startup" name="Save_rules_and_apply_at_startup" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Save rules and apply at startup</h2>
-<pre><code>sudo sh -c &quot;iptables-save &gt; /etc/iptables.rules&quot;
+<h2><a href="#Disable_IPv6_for_apt" name="Disable_IPv6_for_apt" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable IPv6 for apt</h2>
+<pre><code>echo 'Acquire::ForceIPv4 &quot;true&quot;;' | tee /etc/apt/apt.conf.d/99force-ipv4
 </code></pre>
-<ul>
-<li>To keep information from byte and packet counters:</li>
-</ul>
-<pre><code>sudo sh -c &quot;iptables-save -c &gt; /etc/iptables.rules&quot;
+<h2><a href="#Disable_unattended_upgrades" name="Disable_unattended_upgrades" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable unattended upgrades</h2>
+<pre><code>echo 'APT::Periodic::Unattended-Upgrade &quot;0&quot;;' | tee /etc/apt/apt.conf.d/10periodic
 </code></pre>
-<p>Add to <code>/etc/network/interfaces</code> under corresponding interface:</p>
-<pre><code>pre-up iptables-restore &lt; /etc/iptables.rules
-</code></pre>
-<p><em>Last Update: Fri Mar 10 2017 01:37:12 GMT+0900 (JST)</em>  <a href="/raw/iptables.md">Source File</a></p>
+<p><em>Last Update: Fri Mar 17 2017 12:02:48 GMT+0900 (JST)</em>  <a href="/raw/apt.md">Source File</a></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
