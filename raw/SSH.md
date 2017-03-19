@@ -1,5 +1,5 @@
 title: SSH
-category: Server Configuration 
+category: Server Configuration
 time: 1489077036566
 ---
 
