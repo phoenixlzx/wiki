@@ -22,7 +22,7 @@ apt-get install php5-cgi php5-mysql php5-fpm php5-curl php5-gd php5-idn php-pear
 For Ubuntu 16.04 & PHP7
 
 ```
-apt install nginx mysql-server git unzip curl php-fpm php-mysql php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-xml php7.0-tidy php7.0-sqlite3 php7.0-gd php7.0-imap php7.0-json php7.0-ldap
+apt install nginx mysql-server git unzip curl php-fpm php-mysql php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-xml php7.0-tidy php7.0-sqlite3 php7.0-gd php7.0-imap php7.0-json php7.0-ldap php7.0-curl
 ```
 
 File `/etc/php/7.0/fpm/php.ini`
