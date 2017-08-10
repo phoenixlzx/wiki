@@ -62,7 +62,7 @@ ip route add default dev tun0 table priv
 <pre><code>iptables -t nat -I PREROUTING -p tcp -i eth0 --dport 8080 -j DNAT --to-destination 192.168.1.2:8080
 iptables -t nat -I POSTROUTING -p tcp -o tun0 -j SNAT --to-source 192.168.1.1 
 </code></pre>
-<p><em>Last Update: Fri Oct 14 2016 17:32:03 GMT+0900 (JST)</em>  <a href="/raw/NAT.md">Source File</a></p>
+<p><em>Last Update: 2016/10/14 17:32:03 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
