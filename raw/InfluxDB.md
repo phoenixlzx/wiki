@@ -1,4 +1,4 @@
-title: InfluxDB.md
+title: InfluxDB
 category: Server Configuration
 time: 1512110004389
 ---
