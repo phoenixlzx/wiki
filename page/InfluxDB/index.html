@@ -67,11 +67,28 @@
 </code></pre>
 <pre><code>DROP USER &lt;username&gt;
 </code></pre>
+<h2><a href="#Data_Retention" name="Data_Retention" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Data Retention</h2>
+<p>Create retention policy</p>
+<pre><code>CREATE RETENTION POLICY &lt;retention_policy_name&gt; ON &lt;database_name&gt; DURATION &lt;duration&gt; REPLICATION &lt;n&gt; [DEFAULT]
+</code></pre>
+<p>Modify retention policy</p>
+<pre><code>ALTER RETENTION POLICY &lt;retention_policy_name&gt; ON &lt;database_name&gt; DURATION &lt;duration&gt; REPLICATION &lt;n&gt; [DEFAULT]
+</code></pre>
+<p><code>DURATION</code> determines how long InfluxDB keeps the data - the options for specifying the duration of the retention policy are listed below. Note that the minimum retention period is one hour.</p>
+<ul>
+<li><code>m</code> minutes</li>
+<li><code>h</code> hours</li>
+<li><code>d</code> days</li>
+<li><code>w</code> weeks</li>
+<li><code>INF</code> infinite</li>
+</ul>
+<p><code>REPLICATION</code> determines how many independent copies of each point are stored in the cluster, where n is the number of data nodes.</p>
+<p><code>DEFAULT</code> sets the new retention policy as the default retention policy for the database.</p>
 <p>Reference:</p>
 <ol>
 <li><a href="https://docs.influxdata.com/influxdb/v1.3/query_language/authentication_and_authorization/">InfluxDB: Authentication and Authorization</a></li>
 </ol>
-<p><em>Last Update 2017/12/01 15:41:23 +0900</em></p>
+<p><em>Last Update 2017/12/01 15:44:23 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
