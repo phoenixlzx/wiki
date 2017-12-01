@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                iptables - PhoenixWiki            </title>
+                InfluxDB.md - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,21 +28,50 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Security</a>
-<h1 class="page-title">iptables</h1>
+<a class="ui blue ribbon label">Server Configuration</a>
+<h1 class="page-title">InfluxDB.md</h1>
 <div class="page-content">
-<h2><a href="#Save_rules_and_apply_at_startup" name="Save_rules_and_apply_at_startup" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Save rules and apply at startup</h2>
-<pre><code>sudo sh -c &quot;iptables-save &gt; /etc/iptables.rules&quot;
+<h2><a href="#Enable_HTTP_Auth" name="Enable_HTTP_Auth" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable HTTP Auth</h2>
+<p>File <code>/etc/influxdb/influxdb.conf</code></p>
+<pre><code>[http]  
+  enabled = true  
+  bind-address = &quot;:8086&quot;  
+  auth-enabled = true  # change to true
+  log-enabled = true  
+  write-tracing = false  
+  pprof-enabled = false  
+  https-enabled = false  
+  https-certificate = &quot;/etc/ssl/influxdb.pem&quot;  
 </code></pre>
-<ul>
-<li>To keep information from byte and packet counters:</li>
-</ul>
-<pre><code>sudo sh -c &quot;iptables-save -c &gt; /etc/iptables.rules&quot;
+<p>Create an Admin user before restart the process.</p>
+<h2><a href="#Create_Users" name="Create_Users" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Create Users</h2>
+<h4><a href="#Admin_user" name="Admin_user" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Admin user</h4>
+<pre><code>CREATE USER &lt;username&gt; WITH PASSWORD '&lt;password&gt;' WITH ALL PRIVILEGES
 </code></pre>
-<p>Add to <code>/etc/network/interfaces</code> under corresponding interface:</p>
-<pre><code>pre-up iptables-restore &lt; /etc/iptables.rules
+<h4><a href="#Normal_user" name="Normal_user" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Normal user</h4>
+<pre><code>CREATE USER &lt;username&gt; WITH PASSWORD '&lt;password&gt;'
 </code></pre>
-<p><em>Last Update 2017/03/10 01:37:12 +0900</em></p>
+<h2><a href="#Privilege_Management" name="Privilege_Management" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Privilege Management</h2>
+<pre><code>GRANT ALL PRIVILEGES TO &quot;&lt;user&gt;&quot;
+</code></pre>
+<pre><code>REVOKE ALL PRIVILEGES FROM &quot;&lt;user&gt;&quot;
+</code></pre>
+<pre><code>GRANT [READ,WRITE,ALL] ON &lt;database_name&gt; TO &lt;username&gt;
+</code></pre>
+<pre><code>REVOKE [READ,WRITE,ALL] ON &lt;database_name&gt; FROM &lt;username&gt;
+</code></pre>
+<h2><a href="#User_Management" name="User_Management" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;User Management</h2>
+<pre><code>SHOW GRANTS FOR &quot;&lt;user&gt;&quot;
+</code></pre>
+<pre><code>SET PASSWORD FOR &lt;username&gt; = '&lt;password&gt;'
+</code></pre>
+<pre><code>DROP USER &lt;username&gt;
+</code></pre>
+<p>Reference:</p>
+<ol>
+<li><a href="https://docs.influxdata.com/influxdb/v1.3/query_language/authentication_and_authorization/">InfluxDB: Authentication and Authorization</a></li>
+</ol>
+<p><em>Last Update 2017/12/01 15:41:23 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
