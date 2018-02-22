@@ -41,7 +41,22 @@
 <h3><a href="#Masquerade" name="Masquerade" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Masquerade</h3>
 <pre><code>sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 </code></pre>
-<p><em>Last Update 2017/03/19 20:27:53 +0900</em></p>
+<h3><a href="#OpenSSH_ProxyCommand" name="OpenSSH_ProxyCommand" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;OpenSSH ProxyCommand</h3>
+<pre><code>Host hosta
+    User userfoo
+    Hostname 123.123.123.123
+
+Host hostb
+    User userbar
+    Hostname 192.168.1.1
+    Port 2222
+    ProxyCommand ssh -q -W %h:%p hosta
+</code></pre>
+<p>Reference:</p>
+<ul>
+<li>[1] https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/</li>
+</ul>
+<p><em>Last Update 2018/02/23 03:14:42 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
