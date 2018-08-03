@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                NTFS - PhoenixWiki            </title>
+                iLO-SSH - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,22 +28,45 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">OS X</a>
-<h1 class="page-title">NTFS</h1>
+<a class="ui blue ribbon label">Hardware</a>
+<h1 class="page-title">iLO-SSH</h1>
 <div class="page-content">
-<p>Enable NTFS Read-Write on OS X using UUID.</p>
-<p>Plug-in the drive, and execute:</p>
-<pre><code>diskutil info /Volumes/DRIVENAME | grep UUID
+<p>Firstly, Enable SSH in iLO Web Administration page.</p>
+<ol>
+<li>Login with SSH</li>
+</ol>
+<pre><code>ssh Administrator@hpe_server_ilo_ip
 </code></pre>
-<p>Where <code>DRIVENAME</code> is your mounting drive directory name.</p>
-<p>Then write to <code>/etc/fstab</code></p>
-<pre><code>sudo echo &quot;UUID=ENTER_UUID_HERE none ntfs rw,auto,nobrowse&quot; &gt;&gt; /etc/fstab
+<p>and invoke virtual serial port using <code>vsp</code> command</p>
+<pre><code>vsp
 </code></pre>
-<p>Unmount the disk and re-plugin it, the target disk will not show on desktop. So open it from terminal:</p>
-<pre><code>open /Volume
+<ol start="2">
+<li><p>Then reboot the server, wait for system to initialize. If you see <code>&lt;F9 = Setup&gt;</code> - do not press it or the serial port will boot into GUI mode.</p></li>
+<li><p>Press <code>ESC</code> + <code>9</code> for ROM-Based Setup Utility</p></li>
+<li><p>You should see <code>rbsu&gt;</code> prompt. To list Video options, type</p></li>
+</ol>
+<pre><code>SHOW CONFIG VIDEO OPTIONS
 </code></pre>
-<p>And write files to the target disk.</p>
-<p><em>Last Update 2016/10/14 17:31:58 +0900</em></p>
+<p>It should display</p>
+<pre><code>1|Optional Video Primary, Embedded Video Disabled &lt;=
+2|Optional Video Primary, Embedded Video Secondary
+3|Embedded Video Primary, Optional Video Secondary
+</code></pre>
+<ol start="5">
+<li>Modify video options</li>
+</ol>
+<pre><code>SET CONFIG VIDEO OPTIONS 3
+</code></pre>
+<p>To change to</p>
+<pre><code>1|Optional Video Primary, Embedded Video Disabled
+2|Optional Video Primary, Embedded Video Secondary
+3|Embedded Video Primary, Optional Video Secondary &lt;=
+</code></pre>
+<ol start="6">
+<li>Type <code>EXIT</code> to logout and reboot.</li>
+</ol>
+<p>Reference: <a href="https://lukas.dzunko.sk/index.php/Hardware:_HP_Microserver_-_How_to_fix_ILO4_after_adding_second_graphics_card">https://lukas.dzunko.sk/index.php/Hardware:_HP_Microserver_-_How_to_fix_ILO4_after_adding_second_graphics_card</a></p>
+<p><em>Last Update 2018/08/03 18:46:17 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
