@@ -7,7 +7,7 @@
     <meta name="author" content="Phoenix Nemo">
     <meta name="description" content="Phoenix&#39;s Wiki">
     <title>
-                InfluxDB - PhoenixWiki            </title>
+                ssacli - PhoenixWiki            </title>
     <link href="/assets/semantic.min.css" rel="stylesheet"/>
     <link href="/assets/style.css" rel="stylesheet"/>
     <!-- <script src="/assets/semantic.min.js"></script> -->
@@ -28,67 +28,91 @@
 <div class="twelve wide column">
 <div class="column">
 <div class="ui raised segment">
-<a class="ui blue ribbon label">Server Configuration</a>
-<h1 class="page-title">InfluxDB</h1>
+<a class="ui blue ribbon label">HPE</a>
+<h1 class="page-title">ssacli</h1>
 <div class="page-content">
-<h2><a href="#Enable_HTTP_Auth" name="Enable_HTTP_Auth" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable HTTP Auth</h2>
-<p>File <code>/etc/influxdb/influxdb.conf</code></p>
-<pre><code>[http]  
-  enabled = true  
-  bind-address = &quot;:8086&quot;  
-  auth-enabled = true  # change to true
-  log-enabled = true  
-  write-tracing = false  
-  pprof-enabled = false  
-  https-enabled = false  
-  https-certificate = &quot;/etc/ssl/influxdb.pem&quot;  
+<p>HP Enterprise <code>ssacli</code> command examples</p>
+<p>Install <code>ssacli</code> - https://downloads.linux.hpe.com/SDR/project/mcp/</p>
+<h3><a href="#Show_configuration" name="Show_configuration" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Show configuration</h3>
+<pre><code>ssacli ctrl all show config
 </code></pre>
-<p>Create an Admin user before restart the process.</p>
-<h2><a href="#Create_Users" name="Create_Users" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Create Users</h2>
-<h4><a href="#Admin_user" name="Admin_user" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Admin user</h4>
-<pre><code>CREATE USER &lt;username&gt; WITH PASSWORD '&lt;password&gt;' WITH ALL PRIVILEGES
+<h3><a href="#Controller_status" name="Controller_status" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Controller status</h3>
+<pre><code>ssacli ctrl all show status
 </code></pre>
-<h4><a href="#Normal_user" name="Normal_user" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Normal user</h4>
-<pre><code>CREATE USER &lt;username&gt; WITH PASSWORD '&lt;password&gt;'
+<h3><a href="#Show_detailed_controller_information_for_all_controllers" name="Show_detailed_controller_information_for_all_controllers" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Show detailed controller information for all controllers</h3>
+<pre><code>ssacli ctrl all show detail
 </code></pre>
-<h2><a href="#Privilege_Management" name="Privilege_Management" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Privilege Management</h2>
-<pre><code>GRANT ALL PRIVILEGES TO &quot;&lt;user&gt;&quot;
+<h3><a href="#Show_detailed_controller_information_for_controller_in_slot_0" name="Show_detailed_controller_information_for_controller_in_slot_0" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Show detailed controller information for controller in slot 0</h3>
+<pre><code>ssacli ctrl slot=0 show detail
 </code></pre>
-<pre><code>REVOKE ALL PRIVILEGES FROM &quot;&lt;user&gt;&quot;
+<h3><a href="#Rescan_for_New_Devices" name="Rescan_for_New_Devices" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Rescan for New Devices</h3>
+<pre><code>ssacli rescan
 </code></pre>
-<pre><code>GRANT [READ,WRITE,ALL] ON &lt;database_name&gt; TO &lt;username&gt;
+<h3><a href="#Physical_disk_status" name="Physical_disk_status" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Physical disk status</h3>
+<pre><code>ssacli ctrl slot=0 pd all show status
 </code></pre>
-<pre><code>REVOKE [READ,WRITE,ALL] ON &lt;database_name&gt; FROM &lt;username&gt;
+<h3><a href="#Show_detailed_physical_disk_information" name="Show_detailed_physical_disk_information" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Show detailed physical disk information</h3>
+<pre><code>ssacli ctrl slot=0 pd all show detail
 </code></pre>
-<h2><a href="#User_Management" name="User_Management" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;User Management</h2>
-<pre><code>SHOW GRANTS FOR &quot;&lt;user&gt;&quot;
+<h3><a href="#Logical_disk_status" name="Logical_disk_status" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Logical disk status</h3>
+<pre><code>ssacli ctrl slot=0 ld all show status
 </code></pre>
-<pre><code>SET PASSWORD FOR &lt;username&gt; = '&lt;password&gt;'
+<h3><a href="#View_Detailed_Logical_Drive_Status" name="View_Detailed_Logical_Drive_Status" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;View Detailed Logical Drive Status</h3>
+<pre><code>ssacli ctrl slot=0 ld 2 show
 </code></pre>
-<pre><code>DROP USER &lt;username&gt;
+<h3><a href="#Create_New_RAID_0_Logical_Drive" name="Create_New_RAID_0_Logical_Drive" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Create New RAID 0 Logical Drive</h3>
+<pre><code>ssacli ctrl slot=0 create type=ld drives=1I:1:2 raid=0
 </code></pre>
-<h2><a href="#Data_Retention" name="Data_Retention" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Data Retention</h2>
-<p>Create retention policy</p>
-<pre><code>CREATE RETENTION POLICY &lt;retention_policy_name&gt; ON &lt;database_name&gt; DURATION &lt;duration&gt; REPLICATION &lt;n&gt; [DEFAULT]
+<h3><a href="#Create_New_RAID_1_Logical_Drive" name="Create_New_RAID_1_Logical_Drive" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Create New RAID 1 Logical Drive</h3>
+<pre><code>ssacli ctrl slot=0 create type=ld drives=1I:1:1,1I:1:2 raid=1
 </code></pre>
-<p>Modify retention policy</p>
-<pre><code>ALTER RETENTION POLICY &lt;retention_policy_name&gt; ON &lt;database_name&gt; DURATION &lt;duration&gt; REPLICATION &lt;n&gt; [DEFAULT]
+<h3><a href="#Create_New_RAID_5_Logical_Drive" name="Create_New_RAID_5_Logical_Drive" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Create New RAID 5 Logical Drive</h3>
+<pre><code>ssacli ctrl slot=0 create type=ld drives=1I:1:1,1I:1:2,2I:1:6,2I:1:7,2I:1:8 raid=5
 </code></pre>
-<p><code>DURATION</code> determines how long InfluxDB keeps the data - the options for specifying the duration of the retention policy are listed below. Note that the minimum retention period is one hour.</p>
-<ul>
-<li><code>m</code> minutes</li>
-<li><code>h</code> hours</li>
-<li><code>d</code> days</li>
-<li><code>w</code> weeks</li>
-<li><code>INF</code> infinite</li>
-</ul>
-<p><code>REPLICATION</code> determines how many independent copies of each point are stored in the cluster, where n is the number of data nodes.</p>
-<p><code>DEFAULT</code> sets the new retention policy as the default retention policy for the database.</p>
-<p>Reference:</p>
-<ol>
-<li><a href="https://docs.influxdata.com/influxdb/v1.3/query_language/authentication_and_authorization/">InfluxDB: Authentication and Authorization</a></li>
-</ol>
-<p><em>Last Update 2017/12/01 15:45:13 +0900</em></p>
+<h3><a href="#Delete_Logical_Drive" name="Delete_Logical_Drive" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Delete Logical Drive</h3>
+<pre><code>ssacli ctrl slot=0 ld 2 delete
+</code></pre>
+<h3><a href="#Add_New_Physical_Drive_to_Logical_Volume" name="Add_New_Physical_Drive_to_Logical_Volume" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Add New Physical Drive to Logical Volume</h3>
+<pre><code>ssacli ctrl slot=0 ld 2 add drives=2I:1:6,2I:1:7
+</code></pre>
+<h3><a href="#Add_Spare_Disks" name="Add_Spare_Disks" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Add Spare Disks</h3>
+<pre><code>ssacli ctrl slot=0 array all add spares=2I:1:6,2I:1:7
+</code></pre>
+<h3><a href="#Enable_Drive_Write_Cache" name="Enable_Drive_Write_Cache" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable Drive Write Cache</h3>
+<pre><code>ssacli ctrl slot=0 modify dwc=enable
+</code></pre>
+<h3><a href="#Disable_Drive_Write_Cache" name="Disable_Drive_Write_Cache" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable Drive Write Cache</h3>
+<pre><code>ssacli ctrl slot=0 modify dwc=disable
+</code></pre>
+<h3><a href="#Erase_Physical_Drive" name="Erase_Physical_Drive" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Erase Physical Drive</h3>
+<pre><code>ssacli ctrl slot=0 pd 2I:1:6 modify erase
+</code></pre>
+<h3><a href="#Turn_on_Blink_Physical_Disk_LED" name="Turn_on_Blink_Physical_Disk_LED" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Turn on Blink Physical Disk LED</h3>
+<pre><code>ssacli ctrl slot=0 ld 2 modify led=on
+</code></pre>
+<h3><a href="#Turn_off_Blink_Physical_Disk_LED" name="Turn_off_Blink_Physical_Disk_LED" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Turn off Blink Physical Disk LED</h3>
+<pre><code>ssacli ctrl slot=0 ld 2 modify led=off
+</code></pre>
+<h3><a href="#Modify_smart_array_cache_read_and_write_ratio_(cacheratio=readratio/writeratio)" name="Modify_smart_array_cache_read_and_write_ratio_(cacheratio=readratio/writeratio)" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Modify smart array cache read and write ratio (cacheratio=readratio/writeratio)</h3>
+<pre><code>ssacli ctrl slot=0 modify cacheratio=100/0
+</code></pre>
+<h3><a href="#Enable_smart_array_write_cache_when_no_battery_is_present_(No-Battery_Write_Cache_option)" name="Enable_smart_array_write_cache_when_no_battery_is_present_(No-Battery_Write_Cache_option)" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable smart array write cache when no battery is present (No-Battery Write Cache option)</h3>
+<pre><code>ssacli ctrl slot=0 modify nbwc=enable
+</code></pre>
+<h3><a href="#Disable_smart_array_cache_for_certain_Logical_Volume" name="Disable_smart_array_cache_for_certain_Logical_Volume" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable smart array cache for certain Logical Volume</h3>
+<pre><code>ssacli ctrl slot=0 logicaldrive 1 modify arrayaccelerator=disable
+</code></pre>
+<h3><a href="#Enable_smart_array_cache_for_certain_Logical_Volume" name="Enable_smart_array_cache_for_certain_Logical_Volume" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable smart array cache for certain Logical Volume</h3>
+<pre><code>ssacli ctrl slot=0 logicaldrive 1 modify arrayaccelerator=enable
+</code></pre>
+<h3><a href="#Enable_SSD_Smart_Path" name="Enable_SSD_Smart_Path" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Enable SSD Smart Path</h3>
+<pre><code>ssacli ctrl slot=0 array a modify ssdsmartpath=enable
+</code></pre>
+<h3><a href="#Disable_SSD_Smart_Path" name="Disable_SSD_Smart_Path" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Disable SSD Smart Path</h3>
+<pre><code>ssacli ctrl slot=0 array a modify ssdsmartpath=disable
+</code></pre>
+<p>Reference: https://kallesplayground.wordpress.com/useful-stuff/hp-smart-array-cli-commands-under-esxi/</p>
+<p><em>Last Update 2018/08/14 17:43:46 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
