@@ -51,4 +51,48 @@ To change to
 
 6. Type `EXIT` to logout and reboot.
 
+### Set iLO Network via Onboard Administrator
+
+**SSH in OA**
+
+```
+connect server [server bay id]
+```
+
+Note this is actually connecting to bay iLO, via the IP showing in OA.
+
+If you set same IP for multiple server iLO, OA can't recognize them correctly.
+
+**SSH in iLO**
+
+```
+show /map1/enetport1/lanendpt1/ipendpt1
+```
+
+```
+set /map1/enetport1/lanendpt1/ipendpt1 IPv4Address=10.10.10.100 SubnetMask=255.255.255.0
+```
+
+Note: This will reset iLO
+
+```
+set  /map1/gateway1 AccessInfo=10.10.10.1
+```
+
+Note: This will reset iLO
+
+**Others**
+
+```
+set /map1/dhcpendpt1 EnabledState=no
+```
+
+```
+set /map1/accounts1/emergency password=Passw0rd
+```
+
+```
+create /map1/accounts1 username=Admin password=P@ssword
+```
+
 Reference: <https://lukas.dzunko.sk/index.php/Hardware:_HP_Microserver_-_How_to_fix_ILO4_after_adding_second_graphics_card>

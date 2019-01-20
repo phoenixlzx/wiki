@@ -65,8 +65,30 @@
 <ol start="6">
 <li>Type <code>EXIT</code> to logout and reboot.</li>
 </ol>
+<h3><a href="#Set_iLO_Network_via_Onboard_Administrator" name="Set_iLO_Network_via_Onboard_Administrator" target="_self" class="anchor"><span class="header-link">#</span></a>&nbsp;Set iLO Network via Onboard Administrator</h3>
+<p><strong>SSH in OA</strong></p>
+<pre><code>connect server [server bay id]
+</code></pre>
+<p>Note this is actually connecting to bay iLO, via the IP showing in OA.</p>
+<p>If you set same IP for multiple server iLO, OA can't recognize them correctly.</p>
+<p><strong>SSH in iLO</strong></p>
+<pre><code>show /map1/enetport1/lanendpt1/ipendpt1
+</code></pre>
+<pre><code>set /map1/enetport1/lanendpt1/ipendpt1 IPv4Address=10.10.10.100 SubnetMask=255.255.255.0
+</code></pre>
+<p>Note: This will reset iLO</p>
+<pre><code>set  /map1/gateway1 AccessInfo=10.10.10.1
+</code></pre>
+<p>Note: This will reset iLO</p>
+<p><strong>Others</strong></p>
+<pre><code>set /map1/dhcpendpt1 EnabledState=no
+</code></pre>
+<pre><code>set /map1/accounts1/emergency password=Passw0rd
+</code></pre>
+<pre><code>create /map1/accounts1 username=Admin password=P@ssword
+</code></pre>
 <p>Reference: <a href="https://lukas.dzunko.sk/index.php/Hardware:_HP_Microserver_-_How_to_fix_ILO4_after_adding_second_graphics_card">https://lukas.dzunko.sk/index.php/Hardware:_HP_Microserver_-_How_to_fix_ILO4_after_adding_second_graphics_card</a></p>
-<p><em>Last Update 2018/08/03 18:46:17 +0900</em></p>
+<p><em>Last Update 2019/01/20 17:51:18 +0900</em></p>
 </div>
 <div>
 <div id="disqus_thread"></div>
